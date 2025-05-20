@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechSolutions - Inovação e Tecnologia</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #444;
+        }
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            text-align: center;
+        }
+        nav a:hover {
+            background-color: #ddd;
+            color: black;
+        }
+        section {
+            padding: 20px;
+            margin: 10px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>TechSolutions</h1>
+    <p>Inovando o futuro com tecnologia de ponta</p>
+</header>
+
+<nav>
+    <a href="#sobre">Sobre</a>
+    <a href="#servicos">Serviços</a>
+    <a href="#blog">Blog</a>
+    <a href="#contato">Contato</a>
+</nav>
+
+<section id="sobre">
+    <h2>Sobre Nós</h2>
+    <p>Somos uma empresa especializada em soluções tecnológicas inovadoras, oferecendo serviços de desenvolvimento de software, consultoria em TI e suporte técnico especializado.</p>
+</section>
+
+<section id="servicos">
+    <h2>Serviços</h2>
+    <ul>
+        <li>Desenvolvimento de Software Sob Medida</li>
+        <li>Consultoria em Transformação Digital</li>
+        <li>Suporte Técnico e Manutenção de Sistemas</li>
+        <li>Implementação de Soluções em Nuvem</li>
+    </ul>
+</section>
+
+<section id="blog">
+    <h2>Blog</h2>
+    <p>Fique por dentro das últimas tendências e novidades do mundo da tecnologia.</p>
+    <ul>
+        <li><a href="#">Como a Inteligência Artificial Está Transformando os Negócios</a></li>
+        <li><a href="#">5 Tendências Tecnológicas para Ficar de Olho em 2025</a></li>
+        <li><a href="#">A Importância da Cibersegurança na Era Digital</a></li>
+    </ul>
+</section>
+
+<section id="contato">
+    <h2>Contato</h2>
+    <p>Entre em contato conosco para saber mais sobre nossos serviços ou agendar uma consultoria.</p>
+    <p>Email: contato@techsolutions.com.br</p>
+    <p>Telefone: (31) 1234-5678</p>
+</section>
+
+<footer>
+    <p>&copy; 2025 TechSolutions - Todos os direitos reservados</p>
+</footer>
+
+</body>
+</html>
