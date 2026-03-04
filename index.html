@@ -3,25 +3,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mochila Victor - Problema da Mochila 0/1</title>
+<title>Mochila Digital Victor</title>
 
 <style>
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #141E30, #243B55);
-    color: white;
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     display: flex;
     justify-content: center;
-    padding: 40px;
+    align-items: center;
+    height: 100vh;
+    color: white;
 }
 
 .container {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 30px;
+    width: 900px;
+    background: rgba(255,255,255,0.08);
+    padding: 25px;
     border-radius: 15px;
-    width: 600px;
-    backdrop-filter: blur(15px);
-    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 25px rgba(0,0,0,0.5);
 }
 
 h1 {
@@ -29,63 +31,86 @@ h1 {
     margin-bottom: 20px;
 }
 
+.top-section {
+    display: flex;
+    gap: 20px;
+}
+
+.form {
+    flex: 1;
+}
+
 input {
     width: 100%;
     padding: 10px;
-    margin: 6px 0;
+    margin: 5px 0;
     border-radius: 8px;
     border: none;
 }
 
 button {
     width: 100%;
-    padding: 12px;
-    margin-top: 10px;
+    padding: 10px;
+    margin-top: 8px;
     border: none;
     border-radius: 8px;
-    font-weight: bold;
     cursor: pointer;
+    font-weight: bold;
     transition: 0.3s;
 }
 
-.btn-add {
-    background-color: #00c6ff;
-    color: white;
+.btn-add { background: #00c6ff; }
+.btn-add:hover { background: #0072ff; }
+
+.btn-solve { background: #28a745; margin-top: 15px; }
+.btn-solve:hover { background: #1e7e34; }
+
+.inventory {
+    flex: 1;
+    background: rgba(0,0,0,0.3);
+    padding: 15px;
+    border-radius: 10px;
+    max-height: 300px;
+    overflow-y: auto;
 }
 
-.btn-add:hover {
-    background-color: #0072ff;
-}
-
-.btn-solve {
-    background-color: #28a745;
-    color: white;
-}
-
-.btn-solve:hover {
-    background-color: #218838;
-}
-
-.lista {
-    margin-top: 15px;
-}
-
-.lista ul {
-    list-style: none;
-    padding: 0;
-}
-
-.lista li {
+.item {
     background: rgba(255,255,255,0.2);
     padding: 8px;
     margin: 5px 0;
     border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.item button {
+    background: red;
+    width: auto;
+    padding: 4px 8px;
+}
+
+.capacity-bar {
+    margin-top: 15px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 20px;
+    overflow: hidden;
+    height: 25px;
+}
+
+.capacity-fill {
+    height: 100%;
+    width: 0%;
+    background: limegreen;
+    text-align: center;
+    line-height: 25px;
+    color: black;
+    font-weight: bold;
 }
 
 .resultado {
-    margin-top: 20px;
+    margin-top: 15px;
     background: rgba(0,0,0,0.4);
-    padding: 15px;
+    padding: 10px;
     border-radius: 10px;
 }
 </style>
@@ -94,24 +119,31 @@ button {
 <body>
 
 <div class="container">
-    <h1>🎒 Problema da Mochila 0/1</h1>
+    <h1>🎒 Mochila Digital Victor</h1>
 
-    <label>Capacidade da Mochila:</label>
+    <label>Capacidade Máxima:</label>
     <input type="number" id="capacidade" placeholder="Ex: 50">
 
-    <h3>Adicionar Item</h3>
-    <input type="text" id="nome" placeholder="Nome do item">
-    <input type="number" id="peso" placeholder="Peso">
-    <input type="number" id="valor" placeholder="Valor">
+    <div class="top-section">
+        <div class="form">
+            <h3>Adicionar Item</h3>
+            <input type="text" id="nome" placeholder="Nome do item">
+            <input type="number" id="peso" placeholder="Peso">
+            <input type="number" id="valor" placeholder="Valor">
+            <button class="btn-add" onclick="adicionarItem()">Adicionar</button>
+        </div>
 
-    <button class="btn-add" onclick="adicionarItem()">Adicionar Item</button>
-
-    <div class="lista">
-        <h3>Itens Adicionados</h3>
-        <ul id="listaItens"></ul>
+        <div class="inventory">
+            <h3>Inventário</h3>
+            <div id="listaItens"></div>
+        </div>
     </div>
 
-    <button class="btn-solve" onclick="resolverMochila()">Resolver Mochila</button>
+    <div class="capacity-bar">
+        <div class="capacity-fill" id="capacityFill">0%</div>
+    </div>
+
+    <button class="btn-solve" onclick="resolverMochila()">Calcular Melhor Combinação</button>
 
     <div class="resultado" id="resultado"></div>
 </div>
@@ -125,7 +157,7 @@ function adicionarItem() {
     const valor = parseInt(document.getElementById("valor").value);
 
     if (!nome || isNaN(peso) || isNaN(valor)) {
-        alert("Preencha todos os campos corretamente!");
+        alert("Preencha corretamente!");
         return;
     }
 
@@ -137,27 +169,49 @@ function adicionarItem() {
     document.getElementById("valor").value = "";
 }
 
+function removerItem(index) {
+    itens.splice(index, 1);
+    atualizarLista();
+}
+
 function atualizarLista() {
     const lista = document.getElementById("listaItens");
     lista.innerHTML = "";
 
-    itens.forEach((item) => {
-        const li = document.createElement("li");
-        li.textContent = `${item.nome} - Peso: ${item.peso} | Valor: ${item.valor}`;
-        lista.appendChild(li);
+    let pesoTotal = 0;
+
+    itens.forEach((item, index) => {
+        pesoTotal += item.peso;
+
+        lista.innerHTML += `
+            <div class="item">
+                ${item.nome} (P:${item.peso} V:${item.valor})
+                <button onclick="removerItem(${index})">X</button>
+            </div>
+        `;
     });
+
+    atualizarBarra(pesoTotal);
+}
+
+function atualizarBarra(pesoTotal) {
+    const capacidade = parseInt(document.getElementById("capacidade").value) || 1;
+    const porcentagem = Math.min((pesoTotal / capacidade) * 100, 100);
+
+    const barra = document.getElementById("capacityFill");
+    barra.style.width = porcentagem + "%";
+    barra.innerText = Math.round(porcentagem) + "%";
 }
 
 function resolverMochila() {
     const capacidade = parseInt(document.getElementById("capacidade").value);
-
     if (isNaN(capacidade)) {
-        alert("Informe a capacidade da mochila!");
+        alert("Informe a capacidade!");
         return;
     }
 
     const n = itens.length;
-    let dp = Array(n + 1).fill(null).map(() => Array(capacidade + 1).fill(0));
+    let dp = Array(n + 1).fill().map(() => Array(capacidade + 1).fill(0));
 
     for (let i = 1; i <= n; i++) {
         for (let w = 0; w <= capacidade; w++) {
@@ -182,14 +236,12 @@ function resolverMochila() {
         }
     }
 
-    let resultadoDiv = document.getElementById("resultado");
-
-    resultadoDiv.innerHTML = `
-        <h3>Resultado</h3>
+    document.getElementById("resultado").innerHTML = `
+        <h3>Melhor Combinação</h3>
         <p><strong>Valor Máximo:</strong> ${dp[n][capacidade]}</p>
-        <p><strong>Itens Escolhidos:</strong></p>
+        <p><strong>Itens Selecionados:</strong></p>
         <ul>
-            ${escolhidos.map(item => 
+            ${escolhidos.map(item =>
                 `<li>${item.nome} (Peso: ${item.peso}, Valor: ${item.valor})</li>`
             ).join("")}
         </ul>
