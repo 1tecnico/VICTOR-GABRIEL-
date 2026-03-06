@@ -3,439 +3,208 @@
 <head>
 <meta charset="UTF-8">
 <title>Mochila do Victor</title>
-
 <style>
-
-body{
-font-family: Arial, sans-serif;
-background: linear-gradient(135deg,#6a11cb,#2575fc);
-margin:0;
-padding:0;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #6a11cb, #2575fc);
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
 
-.container{
-background:white;
-width:750px;
-max-width:90%;
-padding:25px;
-border-radius:15px;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
+.container {
+  background: white;
+  width: 500px;
+  max-width: 90%;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 }
 
-h1{
-text-align:center;
-color:#333;
+h1 {
+  text-align: center;
+  color: #333;
 }
 
-input{
-width:70%;
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
+input {
+  width: 65%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
-button{
-padding:10px 15px;
-border:none;
-border-radius:8px;
-background:#2575fc;
-color:white;
-cursor:pointer;
-font-weight:bold;
+button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  background: #2575fc;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  margin-left: 5px;
 }
 
-button:hover{
-background:#1a5edb;
+button:hover {
+  background: #1a5edb;
 }
 
-ul{
-list-style:none;
-padding:0;
-margin-top:15px;
+ul {
+  list-style: none;
+  padding: 0;
+  margin-top: 15px;
 }
 
-li{
-background:#f3f3f3;
-padding:12px;
-margin-top:6px;
-border-radius:6px;
-cursor:pointer;
-transition:0.2s;
+li {
+  background: #f3f3f3;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
 }
 
-li:hover{
-background:#e2e2e2;
+li:hover {
+  background: #e2e2e2;
 }
 
-textarea{
-width:100%;
-height:220px;
-margin-top:10px;
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
-resize:none;
+textarea {
+  width: 100%;
+  height: 200px;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  resize: none;
 }
 
-.hidden{
-display:none;
+.hidden {
+  display: none;
 }
 
-.voltar{
-background:#777;
-margin-top:10px;
+.voltar {
+  background: #777;
+  margin-top: 10px;
 }
 
+.remover {
+  background: red;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+.remover:hover {
+  background: darkred;
+}
 </style>
 </head>
-
 <body>
 
 <div class="container">
+  <h1>🎒 Mochila do Victor</h1>
 
-<h1>🎒 Mochila do Victor</h1>
+  <!-- Menu de matérias -->
+  <div id="menu">
+    <input id="materiaInput" placeholder="Digite a matéria">
+    <button onclick="adicionarMateria()">Adicionar</button>
 
-<div id="menu">
+    <h3>📚 Minhas Matérias</h3>
+    <ul id="listaMaterias"></ul>
+  </div>
 
-<input id="materiaInput" placeholder="Digite a matéria (ex: Português)">
-<button onclick="adicionarMateria()">Adicionar</button>
-
-<h3>📚 Minhas Matérias</h3>
-
-<ul id="listaMaterias"></ul>
-
-</div>
-
-<div id="caderno" class="hidden">
-
-<h2 id="tituloMateria"></h2>
-
-<textarea id="textoMateria" placeholder="Escreva aqui a matéria que o professor passou na aula..."></textarea>
-
-<br>
-
-<button onclick="salvar()">Salvar</button>
-<button class="voltar" onclick="voltar()">Voltar</button>
-
-</div>
-
+  <!-- Caderno de uma matéria -->
+  <div id="caderno" class="hidden">
+    <h2 id="tituloMateria"></h2>
+    <textarea id="textoMateria" placeholder="Escreva aqui as anotações da matéria..."></textarea>
+    <br>
+    <button onclick="salvarMateria()">Salvar</button>
+    <button class="voltar" onclick="voltarMenu()">Voltar</button>
+  </div>
 </div>
 
 <script>
-
 let materias = JSON.parse(localStorage.getItem("materiasVictor")) || {};
 let materiaAtual = "";
 
-function atualizarLista(){
+// Atualiza a lista de matérias
+function atualizarLista() {
+  const lista = document.getElementById("listaMaterias");
+  lista.innerHTML = "";
 
-let lista = document.getElementById("listaMaterias");
-lista.innerHTML="";
+  for (let nome in materias) {
+    const li = document.createElement("li");
+    li.textContent = nome;
 
-for(let materia in materias){
+    // Abrir caderno ao clicar no nome
+    li.onclick = () => abrirCaderno(nome);
 
-let li = document.createElement("li");
+    // Botão de remover
+    const botaoRemover = document.createElement("button");
+    botaoRemover.textContent = "❌";
+    botaoRemover.className = "remover";
+    botaoRemover.onclick = (e) => {
+      e.stopPropagation(); // Evita abrir o caderno ao clicar no botão
+      if (confirm(`Deseja remover a matéria "${nome}"?`)) {
+        delete materias[nome];
+        salvarMaterias();
+        atualizarLista();
+      }
+    };
 
-li.innerText = materia;
-
-li.onclick = function(){
-abrirMateria(materia);
-};
-
-lista.appendChild(li);
-
+    li.appendChild(botaoRemover);
+    lista.appendChild(li);
+  }
 }
 
+// Adiciona nova matéria
+function adicionarMateria() {
+  const input = document.getElementById("materiaInput");
+  const nome = input.value.trim();
+  if (nome === "" || materias[nome]) return; // Não adiciona vazio ou duplicado
+
+  materias[nome] = "";
+  salvarMaterias();
+  input.value = "";
+  atualizarLista();
 }
 
-function adicionarMateria(){
+// Abre o caderno de uma matéria
+function abrirCaderno(nome) {
+  materiaAtual = nome;
+  document.getElementById("menu").classList.add("hidden");
+  document.getElementById("caderno").classList.remove("hidden");
+  document.getElementById("tituloMateria").innerText = "Caderno de " + nome;
+  document.getElementById("textoMateria").value = materias[nome];
+}
 
-let input = document.getElementById("materiaInput");
-let nome = input.value;
+// Salva o conteúdo do caderno
+function salvarMateria() {
+  materias[materiaAtual] = document.getElementById("textoMateria").value;
+  salvarMaterias();
+  alert("Matéria salva!");
+}
 
-if(nome === "") return;
+// Volta para o menu
+function voltarMenu() {
+  document.getElementById("menu").classList.remove("hidden");
+  document.getElementById("caderno").classList.add("hidden");
+}
 
-materias[nome] = "";
+// Salva no localStorage
+function salvarMaterias() {
+  localStorage.setItem("materiasVictor", JSON.stringify(materias));
+}
 
-salvarDados();
-
-input.value="";
-
+// Inicializa lista ao abrir a página
 atualizarLista();
-
-}
-
-function abrirMateria(nome){
-
-materiaAtual = nome;
-
-document.getElementById("menu").classList.add("hidden");
-document.getElementById("caderno").classList.remove("hidden");
-
-document.getElementById("tituloMateria").innerText = "Caderno de " + nome;
-
-document.getElementById("textoMateria").value = materias[nome];
-
-}
-
-function salvar(){
-
-materias[materiaAtual] = document.getElementById("textoMateria").value;
-
-salvarDados();
-
-alert("Matéria salva!");
-
-}
-
-function voltar(){
-
-document.getElementById("menu").classList.remove("hidden");
-document.getElementById("caderno").classList.add("hidden");
-
-}
-
-function salvarDados(){
-
-localStorage.setItem("materiasVictor", JSON.stringify(materias));
-
-}
-
-atualizarLista();
-
 </script>
 
 </body>
 </html>
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-<meta charset="UTF-8">
-<title>Mochila do Victor</title>
-
-<style>
-
-body{
-font-family: Arial, sans-serif;
-background: linear-gradient(135deg,#6a11cb,#2575fc);
-margin:0;
-padding:0;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-}
-
-.container{
-background:white;
-width:750px;
-max-width:90%;
-padding:25px;
-border-radius:15px;
-box-shadow:0 10px 30px rgba(0,0,0,0.2);
-}
-
-h1{
-text-align:center;
-color:#333;
-}
-
-input{
-width:70%;
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
-}
-
-button{
-padding:10px 15px;
-border:none;
-border-radius:8px;
-background:#2575fc;
-color:white;
-cursor:pointer;
-font-weight:bold;
-}
-
-button:hover{
-background:#1a5edb;
-}
-
-ul{
-list-style:none;
-padding:0;
-margin-top:15px;
-}
-
-li{
-background:#f3f3f3;
-padding:12px;
-margin-top:6px;
-border-radius:6px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-}
-
-textarea{
-width:100%;
-height:220px;
-margin-top:10px;
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
-resize:none;
-}
-
-.hidden{
-display:none;
-}
-
-.voltar{
-background:#777;
-margin-top:10px;
-}
-
-.remover{
-background:red;
-padding:5px 10px;
-font-size:14px;
-}
-
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<h1>🎒 Mochila do Victor</h1>
-
-<div id="menu">
-
-<input id="materiaInput" placeholder="Digite a matéria (ex: Português)">
-<button onclick="adicionarMateria()">Adicionar</button>
-
-<h3>📚 Minhas Matérias</h3>
-
-<ul id="listaMaterias"></ul>
-
-</div>
-
-<div id="caderno" class="hidden">
-
-<h2 id="tituloMateria"></h2>
-
-<textarea id="textoMateria" placeholder="Escreva aqui a matéria que o professor passou na aula..."></textarea>
-
-<br>
-
-<button onclick="salvar()">Salvar</button>
-<button class="voltar" onclick="voltar()">Voltar</button>
-
-</div>
-
-</div>
-
-<script>
-
-let materias = JSON.parse(localStorage.getItem("materiasVictor")) || {};
-let materiaAtual = "";
-
-function atualizarLista(){
-
-let lista = document.getElementById("listaMaterias");
-lista.innerHTML="";
-
-for(let materia in materias){
-
-let li = document.createElement("li");
-
-let span = document.createElement("span");
-span.innerText = materia;
-
-span.onclick = function(){
-abrirMateria(materia);
-};
-
-let botao = document.createElement("button");
-botao.innerText = "❌";
-botao.className = "remover";
-
-botao.onclick = function(){
-
-if(confirm("Deseja remover essa matéria?")){
-
-delete materias[materia];
-
-salvarDados();
-
-atualizarLista();
-
-}
-
-};
-
-li.appendChild(span);
-li.appendChild(botao);
-
-lista.appendChild(li);
-
-}
-
-}
-
-function adicionarMateria(){
-
-let input = document.getElementById("materiaInput");
-let nome = input.value.trim();
-
-if(nome === "") return;
-
-materias[nome] = "";
-
-salvarDados();
-
-input.value="";
-
-atualizarLista();
-
-}
-
-function abrirMateria(nome){
-
-materiaAtual = nome;
-
-document.getElementById("menu").classList.add("hidden");
-document.getElementById("caderno").classList.remove("hidden");
-
-document.getElementById("tituloMateria").innerText = "Caderno de " + nome;
-
-document.getElementById("textoMateria").value = materias[nome];
-
-}
-
-function salvar(){
-
-materias[materiaAtual] = document.getElementById("textoMateria").value;
-
-salvarDados();
-
-alert("Matéria salva!");
-
-}
-
-function voltar(){
-
-document.getElementById("menu").classList.remove("hidden");
-document.getElementById("caderno").classList.add("hidden");
-
-}
-
-function salvarDados(){
-
-localStorage.setItem("materiasVictor", JSON.stringify(materias));
-
