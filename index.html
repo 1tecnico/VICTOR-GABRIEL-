@@ -2,314 +2,128 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mochila Digital de Victor</title>
-
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', sans-serif;
-}
-
-body {
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
-    color: white;
-    height: 100vh;
-}
-
-/* ===== CAPA ===== */
-.capa {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    text-align: center;
-}
-
-.capa h1 {
-    font-size: 50px;
-    margin-bottom: 20px;
-}
-
-.capa p {
-    font-size: 18px;
-    margin-bottom: 30px;
-}
-
-.btn-entrar {
-    padding: 15px 40px;
-    font-size: 18px;
-    border: none;
-    border-radius: 30px;
-    background: #00c6ff;
-    color: white;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.btn-entrar:hover {
-    background: #0072ff;
-    transform: scale(1.05);
-}
-
-/* ===== SISTEMA ===== */
-.sistema {
-    display: none;
-    padding: 30px;
-}
-
-.container {
-    max-width: 1000px;
-    margin: auto;
-    background: rgba(255,255,255,0.08);
-    padding: 25px;
-    border-radius: 15px;
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 25px rgba(0,0,0,0.4);
-}
-
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-input {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    border-radius: 8px;
-    border: none;
-}
-
-button {
-    padding: 10px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.3s;
-}
-
-.btn-add {
-    background: #00c6ff;
-    width: 100%;
-}
-
-.btn-add:hover {
-    background: #0072ff;
-}
-
-.btn-calc {
-    background: #28a745;
-    width: 100%;
-    margin-top: 10px;
-}
-
-.btn-calc:hover {
-    background: #1e7e34;
-}
-
-.flex {
-    display: flex;
-    gap: 20px;
-}
-
-.inventario {
-    flex: 1;
-    background: rgba(0,0,0,0.3);
-    padding: 15px;
-    border-radius: 10px;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.item {
-    background: rgba(255,255,255,0.2);
-    padding: 8px;
-    margin: 5px 0;
-    border-radius: 6px;
-    display: flex;
-    justify-content: space-between;
-}
-
-.item button {
-    background: red;
-    padding: 3px 8px;
-}
-
-.barra {
-    margin-top: 15px;
-    background: rgba(255,255,255,0.2);
-    border-radius: 20px;
-    height: 25px;
-    overflow: hidden;
-}
-
-.barra-interna {
-    height: 100%;
-    width: 0%;
-    background: limegreen;
-    text-align: center;
-    line-height: 25px;
-    color: black;
-    font-weight: bold;
-    transition: 0.5s;
-}
-
-.resultado {
-    margin-top: 15px;
-    background: rgba(0,0,0,0.4);
-    padding: 15px;
-    border-radius: 10px;
-}
-</style>
+<title>Mochila Escolar</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<!-- ===== CAPA ===== -->
-<div class="capa" id="capa">
-    <h1>🎒 Mochila Digital de Victor</h1>
-    <p>Sistema Inteligente de Otimização usando Algoritmo 0/1 Knapsack</p>
-    <button class="btn-entrar" onclick="entrarSistema()">Entrar</button>
+<h1>📚 Mochila Escolar</h1>
+
+<div class="adicionar">
+    <input type="text" id="materiaInput" placeholder="Nome da matéria">
+    <button onclick="adicionarMateria()">Adicionar Matéria</button>
 </div>
 
-<!-- ===== SISTEMA ===== -->
-<div class="sistema" id="sistema">
-    <div class="container">
-        <h2>Gerenciador de Mochila</h2>
+<h2>Matérias</h2>
+<ul id="listaMaterias"></ul>
 
-        <label>Capacidade Máxima:</label>
-        <input type="number" id="capacidade">
+<div id="caderno" class="hidden">
+    <h2 id="tituloMateria"></h2>
 
-        <div class="flex">
-            <div style="flex:1;">
-                <h3>Adicionar Item</h3>
-                <input type="text" id="nome" placeholder="Nome">
-                <input type="number" id="peso" placeholder="Peso">
-                <input type="number" id="valor" placeholder="Valor">
-                <button class="btn-add" onclick="adicionarItem()">Adicionar Item</button>
-            </div>
+    <textarea id="textoMateria" placeholder="Escreva a matéria da aula aqui..."></textarea>
 
-            <div class="inventario">
-                <h3>Inventário</h3>
-                <div id="lista"></div>
-            </div>
-        </div>
-
-        <div class="barra">
-            <div class="barra-interna" id="barraInterna">0%</div>
-        </div>
-
-        <button class="btn-calc" onclick="calcular()">Calcular Melhor Combinação</button>
-
-        <div class="resultado" id="resultado"></div>
-    </div>
+    <br>
+    <button onclick="salvarMateria()">Salvar</button>
 </div>
 
-<script>
-let itens = [];
-
-function entrarSistema() {
-    document.getElementById("capa").style.display = "none";
-    document.getElementById("sistema").style.display = "block";
-}
-
-function adicionarItem() {
-    let nome = document.getElementById("nome").value;
-    let peso = parseInt(document.getElementById("peso").value);
-    let valor = parseInt(document.getElementById("valor").value);
-
-    if (!nome || isNaN(peso) || isNaN(valor)) {
-        alert("Preencha corretamente!");
-        return;
-    }
-
-    itens.push({nome, peso, valor});
-    atualizarLista();
-
-    document.getElementById("nome").value = "";
-    document.getElementById("peso").value = "";
-    document.getElementById("valor").value = "";
-}
-
-function atualizarLista() {
-    let lista = document.getElementById("lista");
-    lista.innerHTML = "";
-    let pesoTotal = 0;
-
-    itens.forEach((item, index) => {
-        pesoTotal += item.peso;
-        lista.innerHTML += `
-            <div class="item">
-                ${item.nome} (P:${item.peso} V:${item.valor})
-                <button onclick="remover(${index})">X</button>
-            </div>
-        `;
-    });
-
-    atualizarBarra(pesoTotal);
-}
-
-function remover(index) {
-    itens.splice(index, 1);
-    atualizarLista();
-}
-
-function atualizarBarra(pesoTotal) {
-    let capacidade = parseInt(document.getElementById("capacidade").value) || 1;
-    let porcentagem = Math.min((pesoTotal / capacidade) * 100, 100);
-    let barra = document.getElementById("barraInterna");
-    barra.style.width = porcentagem + "%";
-    barra.innerText = Math.round(porcentagem) + "%";
-}
-
-function calcular() {
-    let capacidade = parseInt(document.getElementById("capacidade").value);
-    if (isNaN(capacidade)) {
-        alert("Informe a capacidade!");
-        return;
-    }
-
-    let n = itens.length;
-    let dp = Array(n+1).fill().map(() => Array(capacidade+1).fill(0));
-
-    for (let i=1; i<=n; i++) {
-        for (let w=0; w<=capacidade; w++) {
-            if (itens[i-1].peso <= w) {
-                dp[i][w] = Math.max(
-                    itens[i-1].valor + dp[i-1][w - itens[i-1].peso],
-                    dp[i-1][w]
-                );
-            } else {
-                dp[i][w] = dp[i-1][w];
-            }
-        }
-    }
-
-    let w = capacidade;
-    let escolhidos = [];
-
-    for (let i=n; i>0; i--) {
-        if (dp[i][w] !== dp[i-1][w]) {
-            escolhidos.push(itens[i-1]);
-            w -= itens[i-1].peso;
-        }
-    }
-
-    document.getElementById("resultado").innerHTML = `
-        <h3>Resultado Final</h3>
-        <p><strong>Valor Máximo:</strong> ${dp[n][capacidade]}</p>
-        <p><strong>Itens Selecionados:</strong></p>
-        <ul>
-            ${escolhidos.map(i => `<li>${i.nome} (Peso:${i.peso}, Valor:${i.valor})</li>`).join("")}
-        </ul>
-    `;
-}
-</script>
+<script src="script.js"></script>
 
 </body>
 </html>
+body{
+font-family: Arial;
+background:#f4f4f4;
+padding:20px;
+}
+
+h1{
+color:#333;
+}
+
+ul{
+list-style:none;
+padding:0;
+}
+
+li{
+background:white;
+margin:5px;
+padding:10px;
+cursor:pointer;
+border-radius:5px;
+}
+
+textarea{
+width:100%;
+height:200px;
+margin-top:10px;
+}
+
+button{
+padding:10px;
+margin-top:5px;
+}
+
+.hidden{
+display:none;
+}
+let materias = JSON.parse(localStorage.getItem("materias")) || {};
+let materiaAtual = null;
+
+function atualizarLista() {
+
+    const lista = document.getElementById("listaMaterias");
+    lista.innerHTML = "";
+
+    for (let materia in materias) {
+
+        const li = document.createElement("li");
+        li.textContent = materia;
+
+        li.onclick = () => abrirMateria(materia);
+
+        lista.appendChild(li);
+    }
+}
+
+function adicionarMateria(){
+
+    const input = document.getElementById("materiaInput");
+    const nome = input.value;
+
+    if(nome === "") return;
+
+    materias[nome] = "";
+    salvarDados();
+
+    input.value = "";
+    atualizarLista();
+}
+
+function abrirMateria(nome){
+
+    materiaAtual = nome;
+
+    document.getElementById("caderno").classList.remove("hidden");
+    document.getElementById("tituloMateria").textContent = "Caderno de " + nome;
+
+    document.getElementById("textoMateria").value = materias[nome];
+}
+
+function salvarMateria(){
+
+    const texto = document.getElementById("textoMateria").value;
+
+    materias[materiaAtual] = texto;
+
+    salvarDados();
+
+    alert("Matéria salva!");
+}
+
+function salvarDados(){
+    localStorage.setItem("materias", JSON.stringify(materias));
+}
+
+atualizarLista();
