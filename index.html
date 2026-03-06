@@ -260,3 +260,225 @@ atualizar();
 </body>
 
 </html>
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Minha Mochila - Victor</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+background:#0a3d91;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+.container{
+width:850px;
+background:#0f4fbf;
+padding:25px;
+border-radius:12px;
+box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+h1{
+text-align:center;
+margin-bottom:20px;
+}
+
+input{
+padding:10px;
+width:70%;
+border-radius:6px;
+border:none;
+}
+
+button{
+padding:10px 15px;
+border:none;
+border-radius:6px;
+background:#c62828;
+color:white;
+font-weight:bold;
+cursor:pointer;
+}
+
+button:hover{
+background:#a91d1d;
+}
+
+.lista{
+margin-top:20px;
+}
+
+.materia{
+background:#d32f2f;
+padding:12px;
+border-radius:8px;
+margin-top:8px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.materia span{
+cursor:pointer;
+font-weight:bold;
+}
+
+textarea{
+width:100%;
+height:200px;
+margin-top:15px;
+padding:10px;
+border-radius:6px;
+border:none;
+}
+
+.voltar{
+background:#555;
+margin-top:10px;
+}
+
+.hidden{
+display:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎒 Mochila do Victor</h1>
+
+<div id="inicio">
+
+<input id="materiaInput" placeholder="Digite a matéria">
+<button onclick="adicionar()">Adicionar</button>
+
+<div class="lista" id="lista"></div>
+
+</div>
+
+<div id="caderno" class="hidden">
+
+<h2 id="tituloMateria"></h2>
+
+<textarea id="texto" placeholder="Escreva aqui a aula..."></textarea>
+
+<br>
+
+<button onclick="salvar()">Salvar</button>
+<button class="voltar" onclick="voltar()">Voltar</button>
+
+</div>
+
+</div>
+
+<script>
+
+let materias = JSON.parse(localStorage.getItem("mochila")) || {};
+let atual = "";
+
+function atualizar(){
+
+let lista=document.getElementById("lista");
+
+lista.innerHTML="";
+
+for(let nome in materias){
+
+let div=document.createElement("div");
+
+div.className="materia";
+
+let span=document.createElement("span");
+
+span.innerText=nome;
+
+span.onclick=()=>abrir(nome);
+
+div.appendChild(span);
+
+lista.appendChild(div);
+
+}
+
+}
+
+function adicionar(){
+
+let input=document.getElementById("materiaInput");
+
+let nome=input.value.trim();
+
+if(nome==="") return;
+
+materias[nome]="";
+
+salvarDados();
+
+input.value="";
+
+atualizar();
+
+}
+
+function abrir(nome){
+
+atual=nome;
+
+document.getElementById("inicio").classList.add("hidden");
+
+document.getElementById("caderno").classList.remove("hidden");
+
+document.getElementById("tituloMateria").innerText="📚 "+nome;
+
+document.getElementById("texto").value=materias[nome];
+
+}
+
+function salvar(){
+
+materias[atual]=document.getElementById("texto").value;
+
+salvarDados();
+
+alert("Aula salva!");
+
+}
+
+function voltar(){
+
+document.getElementById("inicio").classList.remove("hidden");
+
+document.getElementById("caderno").classList.add("hidden");
+
+}
+
+function salvarDados(){
+
+localStorage.setItem("mochila",JSON.stringify(materias));
+
+}
+
+atualizar();
+
+</script>
+
+</body>
+</html>
