@@ -447,3 +447,16 @@ atualizarLista();
 
 </body>
 </html>
+function removerMateria(nome){
+
+if(confirm("Deseja remover essa matéria?")){
+
+delete materias[nome];
+
+salvarDados();
+
+atualizarLista();
+
+}
+
+}
