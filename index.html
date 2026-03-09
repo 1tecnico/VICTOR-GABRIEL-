@@ -6,82 +6,127 @@
 
 <style>
 body{
-    font-family: Arial;
-    background:#f2f2f2;
-    text-align:center;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(135deg, #2b6cff, #6fb3ff);
+    margin:0;
+    padding:0;
+}
+
+.container{
+    max-width:700px;
+    margin:50px auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
 
 h1{
-    color:#333;
+    text-align:center;
+    color:#2b6cff;
 }
 
-#container{
-    width:80%;
-    margin:auto;
-}
-
-input, textarea, button{
+input{
     padding:10px;
-    margin:5px;
+    width:70%;
+    border:1px solid #ccc;
+    border-radius:5px;
 }
 
-.materia{
-    background:white;
-    padding:15px;
-    margin:10px;
-    border-radius:10px;
-    box-shadow:0 0 5px rgba(0,0,0,0.2);
+button{
+    padding:10px;
+    border:none;
+    border-radius:5px;
+    cursor:pointer;
+    margin-left:5px;
 }
 
-textarea{
-    width:90%;
-    height:80px;
+.add{
+    background:#2b6cff;
+    color:white;
+}
+
+.edit{
+    background:#ffc107;
+}
+
+.delete{
+    background:#e53935;
+    color:white;
+}
+
+ul{
+    list-style:none;
+    padding:0;
+}
+
+li{
+    background:#f2f2f2;
+    padding:10px;
+    margin-top:10px;
+    border-radius:5px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
 }
 </style>
-
 </head>
 
 <body>
 
+<div class="container">
 <h1>🎒 Mochila do Victor</h1>
-<p>Seu caderno digital</p>
 
-<div id="container">
+<h3>Caderno de Anotações</h3>
 
-<input type="text" id="nomeMateria" placeholder="Nome da matéria">
-<button onclick="adicionarMateria()">Adicionar Matéria</button>
+<input type="text" id="materiaInput" placeholder="Digite o nome da matéria">
+<button class="add" onclick="addMateria()">Adicionar</button>
 
-<div id="listaMaterias"></div>
-
+<ul id="listaMaterias"></ul>
 </div>
 
 <script>
 
-function adicionarMateria(){
+function addMateria(){
+    let input = document.getElementById("materiaInput");
+    let nome = input.value.trim();
 
-    let nome = document.getElementById("nomeMateria").value;
-
-    if(nome == ""){
-        alert("Digite o nome da matéria");
+    if(nome === ""){
+        alert("Digite o nome da matéria!");
         return;
     }
 
+    let li = document.createElement("li");
+    let span = document.createElement("span");
+    span.textContent = nome;
+
+    let editBtn = document.createElement("button");
+    editBtn.textContent = "Editar";
+    editBtn.className = "edit";
+    editBtn.onclick = function(){
+        let novoNome = prompt("Editar matéria:", span.textContent);
+        if(novoNome){
+            span.textContent = novoNome;
+        }
+    }
+
+    let deleteBtn = document.createElement("button");
+    deleteBtn.textContent = "Excluir";
+    deleteBtn.className = "delete";
+    deleteBtn.onclick = function(){
+        li.remove();
+    }
+
     let div = document.createElement("div");
-    div.className = "materia";
+    div.appendChild(editBtn);
+    div.appendChild(deleteBtn);
 
-    div.innerHTML = `
-        <h2>${nome}</h2>
-        <textarea placeholder="Escreva suas anotações aqui..."></textarea><br>
-        <button onclick="salvar(this)">Salvar</button>
-    `;
+    li.appendChild(span);
+    li.appendChild(div);
 
-    document.getElementById("listaMaterias").appendChild(div);
+    document.getElementById("listaMaterias").appendChild(li);
 
-    document.getElementById("nomeMateria").value="";
-}
-
-function salvar(botao){
-    alert("Anotação salva!");
+    input.value="";
 }
 
 </script>
