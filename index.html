@@ -5,7 +5,7 @@
     <title>Mochila de Victor</title>
     <style>
         body {
-            background-color: #1e90ff; /* azul de fundo */
+            background-color: #1e90ff; /* fundo azul */
             font-family: Arial, sans-serif;
             color: white;
             text-align: center;
@@ -14,7 +14,7 @@
         h1 {
             margin-bottom: 20px;
         }
-        input, button {
+        input, button, textarea {
             padding: 10px;
             margin: 5px;
             border: none;
@@ -32,6 +32,7 @@
             margin: 5px 0;
             padding: 10px;
             border-radius: 5px;
+            cursor: pointer;
         }
         .btn {
             margin-left: 10px;
@@ -39,6 +40,14 @@
             background-color: #ffffff;
             color: #1e90ff;
             font-weight: bold;
+        }
+        .anotacoes {
+            display: none;
+            margin-top: 10px;
+        }
+        textarea {
+            width: 90%;
+            height: 80px;
         }
     </style>
 </head>
@@ -58,6 +67,14 @@
             const li = document.createElement("li");
             li.textContent = materia;
 
+            // Área de anotações
+            const divAnotacoes = document.createElement("div");
+            divAnotacoes.className = "anotacoes";
+            const textarea = document.createElement("textarea");
+            textarea.placeholder = "Escreva suas anotações aqui...";
+            divAnotacoes.appendChild(textarea);
+
+            // Botões
             const btnExcluir = document.createElement("button");
             btnExcluir.textContent = "Excluir";
             btnExcluir.className = "btn";
@@ -75,8 +92,15 @@
 
             li.appendChild(btnEditar);
             li.appendChild(btnExcluir);
-            document.getElementById("listaMaterias").appendChild(li);
+            li.appendChild(divAnotacoes);
 
+            // Ao clicar na matéria, mostra/esconde anotações
+            li.addEventListener("click", function(e) {
+                if (e.target === btnExcluir || e.target === btnEditar) return;
+                divAnotacoes.style.display = divAnotacoes.style.display === "none" ? "block" : "none";
+            });
+
+            document.getElementById("listaMaterias").appendChild(li);
             input.value = "";
         }
     </script>
