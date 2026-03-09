@@ -1,77 +1,214 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Mochila de Victor</title>
-  <style>
-    body {
-      background-color: #1E90FF; /* azul */
-      font-family: Arial, sans-serif;
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      margin-bottom: 20px;
-    }
-    #materias {
-      list-style-type: none;
-      padding: 0;
-    }
-    #materias li {
-      background: rgba(255,255,255,0.2);
-      margin: 5px 0;
-      padding: 10px;
-      border-radius: 5px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    button {
-      margin-left: 10px;
-      padding: 5px 10px;
-      border: none;
-      border-radius: 3px;
-      cursor: pointer;
-    }
-    .add-btn {
-      background-color: #32CD32;
-      color: white;
-    }
-    .del-btn {
-      background-color: #FF4500;
-      color: white;
-    }
-  </style>
+<meta charset="UTF-8">
+<title>Mochila de Victor</title>
+
+<style>
+body{
+background:#1E90FF;
+font-family:Arial;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+h1{
+margin-bottom:20px;
+}
+
+input{
+padding:8px;
+border-radius:5px;
+border:none;
+}
+
+button{
+margin:5px;
+padding:6px 12px;
+border:none;
+border-radius:4px;
+cursor:pointer;
+}
+
+.add-btn{
+background:#32CD32;
+color:white;
+}
+
+.del-btn{
+background:#FF4500;
+color:white;
+}
+
+#materias{
+list-style:none;
+padding:0;
+}
+
+#materias li{
+background:rgba(255,255,255,0.2);
+margin:6px 0;
+padding:10px;
+border-radius:6px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+cursor:pointer;
+}
+
+#anotacoesTela{
+display:none;
+}
+
+textarea{
+width:90%;
+height:250px;
+margin-top:10px;
+border-radius:6px;
+border:none;
+padding:10px;
+font-size:16px;
+}
+</style>
 </head>
+
 <body>
-  <h1>Mochila de Victor - Caderno de Anotações</h1>
-  
-  <input type="text" id="novaMateria" placeholder="Digite a matéria">
-  <button class="add-btn" onclick="adicionarMateria()">Adicionar Matéria</button>
-  
-  <ul id="materias"></ul>
-  
-  <script>
-    function adicionarMateria() {
-      const input = document.getElementById('novaMateria');
-      const materia = input.value.trim();
-      if (materia !== "") {
-        const li = document.createElement('li');
-        li.textContent = materia;
-        
-        const btnExcluir = document.createElement('button');
-        btnExcluir.textContent = "Excluir";
-        btnExcluir.className = "del-btn";
-        btnExcluir.onclick = function() {
-          li.remove();
-        };
-        
-        li.appendChild(btnExcluir);
-        document.getElementById('materias').appendChild(li);
-        input.value = "";
-      }
-    }
-  </script>
+
+<h1>Mochila de Victor</h1>
+
+<div id="listaTela">
+
+<input id="novaMateria" placeholder="Digite a matéria">
+
+<button class="add-btn" onclick="adicionarMateria()">
+Adicionar Matéria
+</button>
+
+<ul id="materias"></ul>
+
+</div>
+
+
+<div id="anotacoesTela">
+
+<h2 id="tituloMateria"></h2>
+
+<textarea id="areaAnotacoes" placeholder="Escreva suas anotações aqui..."></textarea>
+
+<br>
+
+<button onclick="voltar()">Voltar</button>
+
+</div>
+
+
+<script>
+
+let materias = JSON.parse(localStorage.getItem("materias")) || [];
+
+let materiaAtual = null;
+
+function salvar(){
+localStorage.setItem("materias",JSON.stringify(materias));
+}
+
+function renderizar(){
+
+const ul=document.getElementById("materias");
+
+ul.innerHTML="";
+
+materias.forEach((m,index)=>{
+
+const li=document.createElement("li");
+
+const nome=document.createElement("span");
+nome.textContent=m.nome;
+
+nome.onclick=function(){
+abrirMateria(index);
+};
+
+const btn=document.createElement("button");
+
+btn.textContent="Excluir";
+btn.className="del-btn";
+
+btn.onclick=function(e){
+e.stopPropagation();
+materias.splice(index,1);
+salvar();
+renderizar();
+};
+
+li.appendChild(nome);
+li.appendChild(btn);
+
+ul.appendChild(li);
+
+});
+
+}
+
+function adicionarMateria(){
+
+const input=document.getElementById("novaMateria");
+
+const nome=input.value.trim();
+
+if(nome!=""){
+
+materias.push({
+nome:nome,
+anotacoes:""
+});
+
+input.value="";
+
+salvar();
+
+renderizar();
+
+}
+
+}
+
+function abrirMateria(index){
+
+materiaAtual=index;
+
+document.getElementById("listaTela").style.display="none";
+document.getElementById("anotacoesTela").style.display="block";
+
+document.getElementById("tituloMateria").textContent=materias[index].nome;
+
+document.getElementById("areaAnotacoes").value=materias[index].anotacoes;
+
+}
+
+document.getElementById("areaAnotacoes").addEventListener("input",function(){
+
+if(materiaAtual!==null){
+
+materias[materiaAtual].anotacoes=this.value;
+
+salvar();
+
+}
+
+});
+
+function voltar(){
+
+document.getElementById("listaTela").style.display="block";
+document.getElementById("anotacoesTela").style.display="none";
+
+}
+
+renderizar();
+
+</script>
+
 </body>
 </html>
