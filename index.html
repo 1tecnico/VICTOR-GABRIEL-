@@ -1,108 +1,77 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <title>Mochila de Victor</title>
-    <style>
-        body {
-            background-color: #1e90ff; /* fundo azul */
-            font-family: Arial, sans-serif;
-            color: white;
-            text-align: center;
-            padding: 20px;
-        }
-        h1 {
-            margin-bottom: 20px;
-        }
-        input, button, textarea {
-            padding: 10px;
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-        }
-        input {
-            width: 200px;
-        }
-        ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        li {
-            background: rgba(255, 255, 255, 0.2);
-            margin: 5px 0;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .btn {
-            margin-left: 10px;
-            cursor: pointer;
-            background-color: #ffffff;
-            color: #1e90ff;
-            font-weight: bold;
-        }
-        .anotacoes {
-            display: none;
-            margin-top: 10px;
-        }
-        textarea {
-            width: 90%;
-            height: 80px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Mochila de Victor</title>
+  <style>
+    body {
+      background-color: #1E90FF; /* azul */
+      font-family: Arial, sans-serif;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    #materias {
+      list-style-type: none;
+      padding: 0;
+    }
+    #materias li {
+      background: rgba(255,255,255,0.2);
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    button {
+      margin-left: 10px;
+      padding: 5px 10px;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .add-btn {
+      background-color: #32CD32;
+      color: white;
+    }
+    .del-btn {
+      background-color: #FF4500;
+      color: white;
+    }
+  </style>
 </head>
 <body>
-    <h1>Mochila de Victor - Caderno de Anotações</h1>
-    <input type="text" id="materiaInput" placeholder="Digite a matéria">
-    <button onclick="adicionarMateria()">Adicionar</button>
-    
-    <ul id="listaMaterias"></ul>
-
-    <script>
-        function adicionarMateria() {
-            const input = document.getElementById("materiaInput");
-            const materia = input.value.trim();
-            if (materia === "") return;
-
-            const li = document.createElement("li");
-            li.textContent = materia;
-
-            // Área de anotações
-            const divAnotacoes = document.createElement("div");
-            divAnotacoes.className = "anotacoes";
-            const textarea = document.createElement("textarea");
-            textarea.placeholder = "Escreva suas anotações aqui...";
-            divAnotacoes.appendChild(textarea);
-
-            // Botões
-            const btnExcluir = document.createElement("button");
-            btnExcluir.textContent = "Excluir";
-            btnExcluir.className = "btn";
-            btnExcluir.onclick = () => li.remove();
-
-            const btnEditar = document.createElement("button");
-            btnEditar.textContent = "Editar";
-            btnEditar.className = "btn";
-            btnEditar.onclick = () => {
-                const novoNome = prompt("Digite o novo nome da matéria:", materia);
-                if (novoNome) {
-                    li.firstChild.textContent = novoNome;
-                }
-            };
-
-            li.appendChild(btnEditar);
-            li.appendChild(btnExcluir);
-            li.appendChild(divAnotacoes);
-
-            // Ao clicar na matéria, mostra/esconde anotações
-            li.addEventListener("click", function(e) {
-                if (e.target === btnExcluir || e.target === btnEditar) return;
-                divAnotacoes.style.display = divAnotacoes.style.display === "none" ? "block" : "none";
-            });
-
-            document.getElementById("listaMaterias").appendChild(li);
-            input.value = "";
-        }
-    </script>
+  <h1>Mochila de Victor - Caderno de Anotações</h1>
+  
+  <input type="text" id="novaMateria" placeholder="Digite a matéria">
+  <button class="add-btn" onclick="adicionarMateria()">Adicionar Matéria</button>
+  
+  <ul id="materias"></ul>
+  
+  <script>
+    function adicionarMateria() {
+      const input = document.getElementById('novaMateria');
+      const materia = input.value.trim();
+      if (materia !== "") {
+        const li = document.createElement('li');
+        li.textContent = materia;
+        
+        const btnExcluir = document.createElement('button');
+        btnExcluir.textContent = "Excluir";
+        btnExcluir.className = "del-btn";
+        btnExcluir.onclick = function() {
+          li.remove();
+        };
+        
+        li.appendChild(btnExcluir);
+        document.getElementById('materias').appendChild(li);
+        input.value = "";
+      }
+    }
+  </script>
 </body>
 </html>
