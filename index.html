@@ -41,6 +41,11 @@ background:#FF4500;
 color:white;
 }
 
+.save-btn{
+background:#FFD700;
+color:black;
+}
+
 #materias{
 list-style:none;
 padding:0;
@@ -89,7 +94,6 @@ Adicionar Matéria
 
 </div>
 
-
 <div id="anotacoesTela">
 
 <h2 id="tituloMateria"></h2>
@@ -98,10 +102,11 @@ Adicionar Matéria
 
 <br>
 
+<button class="save-btn" onclick="salvarAnotacoes()">Salvar Anotações</button>
+
 <button onclick="voltar()">Voltar</button>
 
 </div>
-
 
 <script>
 
@@ -109,7 +114,7 @@ let materias = JSON.parse(localStorage.getItem("materias")) || [];
 
 let materiaAtual = null;
 
-function salvar(){
+function salvarDados(){
 localStorage.setItem("materias",JSON.stringify(materias));
 }
 
@@ -138,7 +143,7 @@ btn.className="del-btn";
 btn.onclick=function(e){
 e.stopPropagation();
 materias.splice(index,1);
-salvar();
+salvarDados();
 renderizar();
 };
 
@@ -166,7 +171,7 @@ anotacoes:""
 
 input.value="";
 
-salvar();
+salvarDados();
 
 renderizar();
 
@@ -187,17 +192,19 @@ document.getElementById("areaAnotacoes").value=materias[index].anotacoes;
 
 }
 
-document.getElementById("areaAnotacoes").addEventListener("input",function(){
+function salvarAnotacoes(){
 
 if(materiaAtual!==null){
 
-materias[materiaAtual].anotacoes=this.value;
+materias[materiaAtual].anotacoes=document.getElementById("areaAnotacoes").value;
 
-salvar();
+salvarDados();
+
+alert("Anotações salvas!");
 
 }
 
-});
+}
 
 function voltar(){
 
